@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHAT BIOMATERIAL ARE YOU?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --accent: #00ff88;
+            --accent2: #ff6b35;
+            --accent3: #a855f7;
+            --card-bg: #141414;
+            --border: #333;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--text);
+        }
+
+        .nav-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        h1 span {
+            display: block;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #666;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--accent);
+            transform: translateX(8px);
+        }
+
+        .option:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option-letter {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #666;
+            margin-right: 1rem;
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .result-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--accent2);
+            margin-bottom: 1rem;
+        }
+
+        .result-material {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .result-description {
+            max-width: 520px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+            color: #bbb;
+            font-size: 1.05rem;
+        }
+
+        .result-traits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .trait {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        .result-section {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+
+        .result-section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-section p {
+            color: #999;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .project-link {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .project-link:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .compatibility {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .compat-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .compat-item:hover {
+            transform: scale(1.1);
+        }
+
+        .compat-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .compat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #666;
+        }
+
+        .compat-name {
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .restart-btn, .view-all-btn {
+            font-family: 'Space Mono', monospace;
+            background: transparent;
+            border: 1px solid var(--text);
+            color: var(--text);
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            margin: 1rem 0.5rem;
+        }
+
+        .restart-btn:hover, .view-all-btn:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .credit {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #444;
+            margin-top: 4rem;
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        /* ========== ALL TYPES PAGE ========== */
+        .types-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .types-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .types-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Quadrant */
+        .quadrant-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            aspect-ratio: 1;
+        }
+
+        .quadrant {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        .quadrant-axis {
+            position: absolute;
+            background: var(--border);
+        }
+
+        .quadrant-axis.x {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+        }
+
+        .quadrant-axis.y {
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #666;
+            letter-spacing: 0.05em;
+        }
+
+        .axis-label.top { top: 8px; left: 50%; transform: translateX(-50%); }
+        .axis-label.bottom { bottom: 8px; left: 50%; transform: translateX(-50%); }
+        .axis-label.left { left: 8px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
+        .axis-label.right { right: 8px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+
+        .quadrant-label {
+            position: absolute;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #444;
+            letter-spacing: 0.05em;
+        }
+
+        .quadrant-label.tl { top: 15%; left: 15%; }
+        .quadrant-label.tr { top: 15%; right: 15%; }
+        .quadrant-label.bl { bottom: 15%; left: 15%; }
+        .quadrant-label.br { bottom: 15%; right: 15%; }
+
+        .material-dot {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .material-dot:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            z-index: 20;
+        }
+
+        .material-dot .dot-icon {
+            font-size: 1.8rem;
+            display: block;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+        }
+
+        .material-dot .dot-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #888;
+            margin-top: 2px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .material-dot:hover .dot-label {
+            opacity: 1;
+        }
+
+        /* Material Detail Page */
+        .material-detail {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .material-detail.active {
+            display: block;
+        }
+
+        .back-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--text);
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .detail-icon {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .detail-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-description {
+            max-width: 520px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+            color: #bbb;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            opacity: 0.1;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .compatibility {
+                gap: 1rem;
+            }
+            .result-section {
+                padding: 1rem;
+            }
+            .quadrant-container {
+                max-width: 100%;
+            }
+            .material-dot .dot-icon {
+                font-size: 1.4rem;
+            }
+            .axis-label {
+                font-size: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div class="container">
+        <nav class="nav">
+            <button class="nav-btn active" onclick="showPage('quiz-page')">TAKE THE QUIZ</button>
+            <button class="nav-btn" onclick="showPage('types-page')">ALL TYPES</button>
+        </nav>
+
+        <!-- QUIZ PAGE -->
+        <div class="page active" id="quiz-page">
+            <header id="header">
+                <div class="subtitle">Better than MBTI, honestly</div>
+                <h1>WHAT BIOMATERIAL<br><span>ARE YOU?</span></h1>
+            </header>
+
+            <main id="quiz"></main>
+
+            <div class="results-container" id="results"></div>
+        </div>
+
+        <!-- ALL TYPES PAGE -->
+        <div class="page" id="types-page">
+            <div class="types-header">
+                <h2>THE BIOMATERIALS</h2>
+                <p>Click any material to learn more</p>
+            </div>
+
+            <div class="quadrant-container">
+                <div class="quadrant" id="quadrant">
+                    <div class="quadrant-axis x"></div>
+                    <div class="quadrant-axis y"></div>
+                    <span class="axis-label top">EXPERIMENTAL</span>
+                    <span class="axis-label bottom">TRADITIONAL</span>
+                    <span class="axis-label left">SLOW GROWTH</span>
+                    <span class="axis-label right">FAST GROWTH</span>
+                    <span class="quadrant-label tl">the weird ones</span>
+                    <span class="quadrant-label tr">the disruptors</span>
+                    <span class="quadrant-label bl">the ancients</span>
+                    <span class="quadrant-label br">the growers</span>
+                </div>
+            </div>
+
+            <!-- Material Detail View -->
+            <div class="material-detail" id="material-detail"></div>
+        </div>
+
+        
+    </div>
+
+    <script>
+        const questions = [
+            // Q1: mycelium, clt, hempcrete, cork, bamboo
+            {
+                question: "It's 2 AM. What are you doing?",
+                options: [
+                    { text: "Deep in a Wikipedia rabbit hole, 47 tabs open", scores: { mycelium: 3, algae: 1 } },
+                    { text: "Finally finishing that project I've been planning for weeks", scores: { clt: 3, rammed_earth: 1 } },
+                    { text: "Hanging out, vibing, maybe a little snack", scores: { hempcrete: 3, rice_straw: 1 } },
+                    { text: "Sleeping soundly, I recover fast", scores: { cork: 3, hempcrete: 1 } },
+                    { text: "Already up, already moving, already productive", scores: { bamboo: 3, clt: 1 } }
+                ]
+            },
+            // Q2: rammed_earth, algae, bacterial_cellulose, biochar, rice_straw
+            {
+                question: "Your friend group would describe you as:",
+                options: [
+                    { text: "The old soul, wise beyond my years", scores: { rammed_earth: 3, biochar: 1 } },
+                    { text: "The futurist, always ten steps ahead", scores: { algae: 3, bacterial_cellulose: 1 } },
+                    { text: "The weird one, affectionately", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "The deep one, I've been through things", scores: { biochar: 3, rammed_earth: 1 } },
+                    { text: "The underdog, humble but capable", scores: { rice_straw: 3, hempcrete: 1 } }
+                ]
+            },
+            // Q3: mycelium, rammed_earth, cork, algae, rice_straw
+            {
+                question: "Pick an ideal weekend activity:",
+                options: [
+                    { text: "Hosting a dinner party where everyone meets someone new", scores: { mycelium: 3, cork: 1 } },
+                    { text: "Long hike, no phone, maybe some journaling", scores: { rammed_earth: 3, biochar: 1 } },
+                    { text: "Trying out a new sport or fitness class", scores: { cork: 3, bamboo: 1 } },
+                    { text: "Visiting an aquarium or botanical garden", scores: { algae: 3, bacterial_cellulose: 1 } },
+                    { text: "Cooking a big meal from scratch with whatever's around", scores: { rice_straw: 3, hempcrete: 1 } }
+                ]
+            },
+            // Q4: clt, hempcrete, bamboo, bacterial_cellulose, biochar
+            {
+                question: "How do you approach a big project?",
+                options: [
+                    { text: "Detailed plan, milestones, execute precisely", scores: { clt: 3, bamboo: 1 } },
+                    { text: "Start loose, figure it out as I go, it always works out", scores: { hempcrete: 3, cork: 1 } },
+                    { text: "Move fast, iterate, ship something", scores: { bamboo: 3, algae: 1 } },
+                    { text: "Experiment wildly until something clicks", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "Sit with it, let it transform me before I transform it", scores: { biochar: 3, rammed_earth: 1 } }
+                ]
+            },
+            // Q5: mycelium, clt, rammed_earth, hempcrete, algae
+            {
+                question: "What's your relationship with change?",
+                options: [
+                    { text: "I connect the old to the new, nothing is truly lost", scores: { mycelium: 3, rice_straw: 1 } },
+                    { text: "I adapt through better systems and planning", scores: { clt: 3, bamboo: 1 } },
+                    { text: "Change is fine but I trust what's stood the test of time", scores: { rammed_earth: 3, cork: 1 } },
+                    { text: "I roll with it, change doesn't really stress me", scores: { hempcrete: 3, cork: 1 } },
+                    { text: "I thrive in it, I'm always evolving", scores: { algae: 3, bacterial_cellulose: 1 } }
+                ]
+            },
+            // Q6: cork, bamboo, bacterial_cellulose, biochar, rice_straw
+            {
+                question: "How do you handle criticism?",
+                options: [
+                    { text: "Bounce back quickly, it doesn't stick to me", scores: { cork: 3, hempcrete: 1 } },
+                    { text: "Already moved on before they finished talking", scores: { bamboo: 3, algae: 1 } },
+                    { text: "Take what's useful, mutate, become something new", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "Absorb it, process it deeply, let it change me", scores: { biochar: 3, rammed_earth: 1 } },
+                    { text: "Turn it into something useful, nothing goes to waste", scores: { rice_straw: 3, mycelium: 1 } }
+                ]
+            },
+            // Q7: mycelium, hempcrete, bamboo, algae, biochar
+            {
+                question: "Pick a superpower:",
+                options: [
+                    { text: "Telepathic network with everyone you've ever met", scores: { mycelium: 3, algae: 1 } },
+                    { text: "Invulnerability, nothing can hurt you", scores: { hempcrete: 3, cork: 1 } },
+                    { text: "Super speed", scores: { bamboo: 3, clt: 1 } },
+                    { text: "Shapeshifting", scores: { algae: 3, bacterial_cellulose: 1 } },
+                    { text: "Ability to absorb and neutralize anything toxic", scores: { biochar: 3, mycelium: 1 } }
+                ]
+            },
+            // Q8: clt, rammed_earth, cork, bacterial_cellulose, rice_straw
+            {
+                question: "In a group project, you're the one who:",
+                options: [
+                    { text: "Creates the structure and keeps everyone on track", scores: { clt: 3, bamboo: 1 } },
+                    { text: "Provides the foundation everyone else builds on", scores: { rammed_earth: 3, biochar: 1 } },
+                    { text: "Keeps morale up and smooths over conflicts", scores: { cork: 3, mycelium: 1 } },
+                    { text: "Brings the wild ideas no one else would think of", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "Makes something great from the scraps others leave behind", scores: { rice_straw: 3, hempcrete: 1 } }
+                ]
+            },
+            // Q9: mycelium, rammed_earth, hempcrete, bacterial_cellulose, rice_straw
+            {
+                question: "When you're stressed, you:",
+                options: [
+                    { text: "Talk it out with a bunch of different people", scores: { mycelium: 3, cork: 1 } },
+                    { text: "Go quiet, turn inward, process slowly", scores: { rammed_earth: 3, biochar: 1 } },
+                    { text: "Honestly? Take a nap, drink some water, it'll pass", scores: { hempcrete: 3, cork: 1 } },
+                    { text: "Channel it into making something weird", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "Get practical, clean, organize, do something useful", scores: { rice_straw: 3, clt: 1 } }
+                ]
+            },
+            // Q10: clt, cork, bamboo, algae, biochar
+            {
+                question: "Your origin story:",
+                options: [
+                    { text: "Had a plan, worked hard, made it happen", scores: { clt: 3, bamboo: 1 } },
+                    { text: "Got knocked down a lot, kept bouncing back", scores: { cork: 3, hempcrete: 1 } },
+                    { text: "Never could sit still, always onto the next thing", scores: { bamboo: 3, algae: 1 } },
+                    { text: "Reinvented myself at least twice", scores: { algae: 3, bacterial_cellulose: 1 } },
+                    { text: "Went through something hard that changed me completely", scores: { biochar: 3, rammed_earth: 1 } }
+                ]
+            },
+            // Q11: hempcrete, cork, bamboo, bacterial_cellulose, biochar
+            {
+                question: "At a party, you're most likely to:",
+                options: [
+                    { text: "Chill on the couch, happy to talk to whoever sits down", scores: { hempcrete: 3, rice_straw: 1 } },
+                    { text: "Float around, keep the energy up, make people laugh", scores: { cork: 3, mycelium: 1 } },
+                    { text: "Organize a game or activity to get things moving", scores: { bamboo: 3, clt: 1 } },
+                    { text: "End up in a weird conversation about something niche", scores: { bacterial_cellulose: 3, algae: 1 } },
+                    { text: "Have one intense conversation in the corner all night", scores: { biochar: 3, rammed_earth: 1 } }
+                ]
+            },
+            // Q12: mycelium, clt, rammed_earth, algae, rice_straw
+            {
+                question: "Pick a compliment you'd most like to receive:",
+                options: [
+                    { text: "\"You know everyone, you're so connected\"", scores: { mycelium: 3, cork: 1 } },
+                    { text: "\"You're so reliable, I can always count on you\"", scores: { clt: 3, rammed_earth: 1 } },
+                    { text: "\"You're timeless, like you've always been here\"", scores: { rammed_earth: 3, biochar: 1 } },
+                    { text: "\"You're ahead of your time\"", scores: { algae: 3, bacterial_cellulose: 1 } },
+                    { text: "\"You make something from nothing, so resourceful\"", scores: { rice_straw: 3, hempcrete: 1 } }
+                ]
+            }
+        ];
+
+        const materials = {
+            mycelium: {
+                name: "MYCELIUM",
+                icon: "🍄",
+                description: "You're the connector. While everyone else is focused on being visible, you're building networks underground, linking people, ideas, and systems in ways that aren't always obvious. You thrive in the background, breaking down problems into something useful, and you're probably the reason your friend group all knows each other. Patient, weird in the best way, and secretly essential.",
+                traits: ["NETWORKER", "PATIENT", "BEHIND-THE-SCENES", "ESSENTIAL", "DECOMPOSER"],
+                strengths: "You see connections others miss and build community without needing credit. People underestimate you, which is fine, you're playing a longer game.",
+                challenges: "You can spread yourself thin trying to connect everything. Sometimes you need to come up to the surface and be visible.",
+                compatible: { best: "cork", good: "hempcrete", rough: "clt" },
+                funFact: "The largest living organism on Earth is a fungal network spanning 2,385 acres in Oregon. Big networker energy.",
+                project: { name: "Hy-Fi Tower", location: "MoMA PS1, New York", year: "2014" },
+                position: { x: 25, y: 60 }
+            },
+            clt: {
+                name: "CROSS-LAMINATED TIMBER",
+                icon: "🪵",
+                description: "You're engineered for performance. Reliable, ambitious, and always with a plan, you show up prepared and you deliver. You've got something to prove (maybe to concrete, maybe to yourself) and you're not afraid of big structural challenges. Some might call you rigid, but you call it having standards.",
+                traits: ["RELIABLE", "AMBITIOUS", "PREPARED", "STRONG", "STRUCTURED"],
+                strengths: "When you commit, you commit. People can build on you, literally and figuratively. You're the one who actually finishes the group project.",
+                challenges: "Flexibility isn't your strong suit. Sometimes the plan needs to change, and that's okay.",
+                compatible: { best: "bamboo", good: "rammed_earth", rough: "bacterial_cellulose" },
+                funFact: "CLT buildings can be assembled 25% faster than concrete ones. You probably meal prep on Sundays.",
+                project: { name: "Mjøstårnet", location: "Brumunddal, Norway", year: "2019" },
+                position: { x: 55, y: 35 }
+            },
+            rammed_earth: {
+                name: "RAMMED EARTH",
+                icon: "🏔️",
+                description: "You're an old soul with deep roots. While everyone else chases the new thing, you understand that the real answers are ancient, slow, and grounded. You have an intensity that some people find intimidating, but those who get you really get you. You're not going anywhere, you're built to last.",
+                traits: ["GROUNDED", "TIMELESS", "INTENSE", "PATIENT", "MONOLITHIC"],
+                strengths: "You bring perspective and stability to chaotic situations. When everyone else is freaking out, you're the calm center.",
+                challenges: "You can be slow to start and resistant to change. Not everything needs to last 10,000 years.",
+                compatible: { best: "biochar", good: "cork", rough: "algae" },
+                funFact: "Parts of the Great Wall of China are rammed earth and still standing after 2,000+ years. You get it.",
+                project: { name: "Nk'Mip Desert Cultural Centre", location: "Osoyoos, Canada", year: "2006" },
+                position: { x: 15, y: 15 }
+            },
+            hempcrete: {
+                name: "HEMPCRETE",
+                icon: "🌿",
+                description: "You're the chill one. Easygoing, adaptable, and way stronger than you look, you don't need to prove anything to anyone. You just quietly absorb whatever comes your way and keep growing. Some people underestimate you, but you're literally carbon-negative, so who's really winning here?",
+                traits: ["CHILL", "ADAPTABLE", "UNDERESTIMATED", "STEADY", "LOW-EGO"],
+                strengths: "Nothing really gets to you. You're comfortable in your own skin and you make the people around you feel comfortable too.",
+                challenges: "Sometimes your chill energy means you don't advocate for yourself. It's okay to want things.",
+                compatible: { best: "rice_straw", good: "cork", rough: "clt" },
+                funFact: "Hemp grows to harvest in 4 months and absorbs more CO₂ per acre than trees. Low-key overachiever.",
+                project: { name: "Flat House", location: "Cambridgeshire, UK", year: "2019" },
+                position: { x: 70, y: 40 }
+            },
+            cork: {
+                name: "CORK",
+                icon: "🍾",
+                description: "You're resilient in the most literal sense, things bounce right off you. Flexible, buoyant, and weirdly good in a crisis. You've been knocked down before and you just... popped back up. Great at parties (you absorb awkward silences like acoustic panels), warm, and renewable without being depleted.",
+                traits: ["RESILIENT", "BUOYANT", "WARM", "FLEXIBLE", "REGENERATIVE"],
+                strengths: "You recover from setbacks faster than anyone. Stress that would crush others just compresses you temporarily.",
+                challenges: "Sometimes you bounce away from things you should actually sit with. Not every feeling needs to be absorbed and released.",
+                compatible: { best: "mycelium", good: "hempcrete", rough: "rammed_earth" },
+                funFact: "Cork bark regrows after harvest, so the tree is never cut down. You're the friend who always has more to give.",
+                project: { name: "Serpentine Pavilion", location: "London, UK", year: "2012" },
+                position: { x: 35, y: 30 }
+            },
+            bamboo: {
+                name: "BAMBOO",
+                icon: "🎋",
+                description: "You move fast. Like, really fast. Technically a grass but with big tree energy, you're flexible, strong, and you get more done before noon than most people do all week. Some might call it restless, you call it momentum. You bend without breaking and you're probably already onto the next thing.",
+                traits: ["FAST", "FLEXIBLE", "ENERGETIC", "STRONG", "RESTLESS"],
+                strengths: "Your energy is contagious. You get things moving when everyone else is stuck in planning mode.",
+                challenges: "Slowing down feels like failure to you, but sustainability isn't a sprint. Sometimes you need to just... stop.",
+                compatible: { best: "clt", good: "algae", rough: "rammed_earth" },
+                funFact: "Bamboo can grow 35 inches in 24 hours. You've definitely sent an email at 6 AM.",
+                project: { name: "Green School", location: "Bali, Indonesia", year: "2008" },
+                position: { x: 90, y: 45 }
+            },
+            algae: {
+                name: "ALGAE",
+                icon: "🦠",
+                description: "You're the futurist of the group. Always thinking ten steps ahead, a little obsessed with systems and cycles, and honestly kind of mysterious. You thrive in environments others find uncomfortable and you're convinced the future is wetter and greener than anyone expects. Photosynthesis is a personality trait.",
+                traits: ["FUTURIST", "ADAPTIVE", "MYSTERIOUS", "SYSTEMS-THINKER", "GREEN"],
+                strengths: "You see possibilities where others see dead ends. You're comfortable with ambiguity and change.",
+                challenges: "You can be hard to pin down. Sometimes people need you to just be here, now, in solid form.",
+                compatible: { best: "bacterial_cellulose", good: "bamboo", rough: "rammed_earth" },
+                funFact: "Algae produce 50-80% of Earth's oxygen. Main character energy but make it microscopic.",
+                project: { name: "BIQ House", location: "Hamburg, Germany", year: "2013" },
+                position: { x: 80, y: 85 }
+            },
+            bacterial_cellulose: {
+                name: "BACTERIAL CELLULOSE",
+                icon: "🫧",
+                description: "You're the avant-garde one. Grown, not made, you represent a completely different way of doing things. Delicate-looking but surprisingly strong, translucent, a little bit kombucha-coded. People don't always know what to do with you, but the ones who get it are obsessed.",
+                traits: ["AVANT-GARDE", "EXPERIMENTAL", "SURPRISING", "DELICATE", "STRONG"],
+                strengths: "You're genuinely original. You don't fit existing categories because you're creating new ones.",
+                challenges: "Not everyone is ready for you. Sometimes you need to meet people where they are.",
+                compatible: { best: "algae", good: "mycelium", rough: "clt" },
+                funFact: "Bacterial cellulose is grown from the same culture as kombucha. You've definitely had a fermentation phase.",
+                project: { name: "Biocouture", location: "Various", year: "2014" },
+                position: { x: 40, y: 90 }
+            },
+            biochar: {
+                name: "BIOCHAR",
+                icon: "⚫",
+                description: "You're the deep one. Forged by fire, you've been through some stuff and come out transformed, darker, denser, and weirdly good at holding onto things that matter. You're a carbon sink in human form: you take the heavy stuff and lock it away so it can become something useful.",
+                traits: ["TRANSFORMED", "DEEP", "HEAVY", "STABLE", "ALCHEMIST"],
+                strengths: "You've done the work. You can hold space for difficult things because you've metabolized your own.",
+                challenges: "You can get stuck in the depths. Not everything needs to be profound, sometimes things are just light.",
+                compatible: { best: "rammed_earth", good: "mycelium", rough: "bamboo" },
+                funFact: "Biochar can store carbon in soil for thousands of years. You're not over your past, you've composted it.",
+                project: { name: "Made of Air Facade", location: "Berlin, Germany", year: "2022" },
+                position: { x: 20, y: 70 }
+            },
+            rice_straw: {
+                name: "RICE STRAW",
+                icon: "🌾",
+                description: "You're proof that humble origins don't mean small impact. Agricultural waste turned architectural wonder, you were overlooked, maybe even discarded, but you turned out to be exactly what was needed. Practical, sustainable, and quietly revolutionary.",
+                traits: ["HUMBLE", "RESOURCEFUL", "PRACTICAL", "UNDERDOG", "CIRCULAR"],
+                strengths: "You find value in what others throw away, including yourself. You don't need fancy origins to do important work.",
+                challenges: "Sometimes you undersell yourself. Your origin story is a feature, not a bug.",
+                compatible: { best: "hempcrete", good: "mycelium", rough: "clt" },
+                funFact: "Burning rice straw creates massive air pollution in Asia. Using it instead? Chef's kiss. That's you: solving problems by existing.",
+                project: { name: "Rice Straw Pavilion", location: "Beijing, China", year: "2018" },
+                position: { x: 75, y: 20 }
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = {};
+        let currentPage = 'quiz-page';
+
+        Object.keys(materials).forEach(m => scores[m] = 0);
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[onclick="showPage('${pageId}')"]`).classList.add('active');
+
+            // Show/hide progress bar
+            document.getElementById('progress-container').style.display = 
+                pageId === 'quiz-page' ? 'block' : 'none';
+
+            currentPage = pageId;
+
+            // Reset material detail when switching to types page
+            if (pageId === 'types-page') {
+                document.getElementById('material-detail').classList.remove('active');
+                document.getElementById('material-detail').innerHTML = '';
+                document.querySelector('.quadrant-container').style.display = 'block';
+                document.querySelector('.types-header').style.display = 'block';
+            }
+        }
+
+        function renderQuadrant() {
+            const quadrant = document.getElementById('quadrant');
+            
+            Object.entries(materials).forEach(([key, m]) => {
+                const dot = document.createElement('div');
+                dot.className = 'material-dot';
+                dot.style.left = m.position.x + '%';
+                dot.style.top = (100 - m.position.y) + '%'; // Higher y value = higher on screen (experimental)
+                dot.innerHTML = `
+                    <span class="dot-icon">${m.icon}</span>
+                    <span class="dot-label">${m.name}</span>
+                `;
+                dot.onclick = () => showMaterialDetail(key);
+                quadrant.appendChild(dot);
+            });
+        }
+
+        function showMaterialDetail(key) {
+            const m = materials[key];
+            const bestMatch = materials[m.compatible.best];
+            const roughMatch = materials[m.compatible.rough];
+
+            document.querySelector('.quadrant-container').style.display = 'none';
+            document.querySelector('.types-header').style.display = 'none';
+
+            const detail = document.getElementById('material-detail');
+            detail.innerHTML = `
+                <button class="back-btn" onclick="hideMaterialDetail()">← BACK TO ALL TYPES</button>
+                
+                <div class="detail-header">
+                    <span class="detail-icon">${m.icon}</span>
+                    <h2 class="detail-name">${m.name}</h2>
+                </div>
+
+                <p class="detail-description">${m.description}</p>
+
+                <div class="result-traits">
+                    ${m.traits.map(t => `<span class="trait">${t}</span>`).join('')}
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">STRENGTHS</div>
+                    <p>${m.strengths}</p>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">GROWTH EDGE</div>
+                    <p>${m.challenges}</p>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">NOTABLE PROJECT</div>
+                    <p><strong>${m.project.name}</strong><br>${m.project.location} (${m.project.year})</p>
+                </div>
+
+                <div class="compatibility">
+                    <div class="compat-item" onclick="showMaterialDetail('${m.compatible.best}')">
+                        <span class="compat-icon">${bestMatch.icon}</span>
+                        <div class="compat-label">BEST MATCH</div>
+                        <div class="compat-name">${bestMatch.name}</div>
+                    </div>
+                    <div class="compat-item" onclick="showMaterialDetail('${m.compatible.rough}')">
+                        <span class="compat-icon">${roughMatch.icon}</span>
+                        <div class="compat-label">FRICTION WITH</div>
+                        <div class="compat-name">${roughMatch.name}</div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">FUN FACT</div>
+                    <p>${m.funFact}</p>
+                </div>
+            `;
+            detail.classList.add('active');
+        }
+
+        function hideMaterialDetail() {
+            document.getElementById('material-detail').classList.remove('active');
+            document.querySelector('.quadrant-container').style.display = 'block';
+            document.querySelector('.types-header').style.display = 'block';
+        }
+
+        function renderQuestion() {
+            const quiz = document.getElementById('quiz');
+            const q = questions[currentQuestion];
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            
+            quiz.innerHTML = `
+                <div class="question-container active">
+                    <div class="question-number">QUESTION ${currentQuestion + 1} OF ${questions.length}</div>
+                    <h2 class="question-text">${q.question}</h2>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${i})">
+                                <span class="option-letter">${letters[i]}</span>
+                                ${opt.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('progress').style.width = 
+                ((currentQuestion) / questions.length * 100) + '%';
+        }
+
+        function selectOption(index) {
+            const option = questions[currentQuestion].options[index];
+            
+            Object.entries(option.scores).forEach(([material, score]) => {
+                scores[material] += score;
+            });
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('header').style.display = 'none';
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('progress').style.width = '100%';
+
+            const winner = Object.entries(scores).reduce((a, b) => 
+                a[1] > b[1] ? a : b
+            )[0];
+
+            const m = materials[winner];
+            const bestMatch = materials[m.compatible.best];
+            const roughMatch = materials[m.compatible.rough];
+
+            document.getElementById('results').innerHTML = `
+                <div class="result-label">YOU ARE</div>
+                <span class="result-icon">${m.icon}</span>
+                <h2 class="result-material">${m.name}</h2>
+                <p class="result-description">${m.description}</p>
+                
+                <div class="result-traits">
+                    ${m.traits.map(t => `<span class="trait">${t}</span>`).join('')}
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">YOUR STRENGTHS</div>
+                    <p>${m.strengths}</p>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">YOUR GROWTH EDGE</div>
+                    <p>${m.challenges}</p>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">YOUR SPIRIT PROJECT</div>
+                    <p><strong>${m.project.name}</strong><br>${m.project.location} (${m.project.year})</p>
+                </div>
+
+                <div class="compatibility">
+                    <div class="compat-item" onclick="goToMaterial('${m.compatible.best}')">
+                        <span class="compat-icon">${bestMatch.icon}</span>
+                        <div class="compat-label">BEST MATCH</div>
+                        <div class="compat-name">${bestMatch.name}</div>
+                    </div>
+                    <div class="compat-item" onclick="goToMaterial('${m.compatible.rough}')">
+                        <span class="compat-icon">${roughMatch.icon}</span>
+                        <div class="compat-label">FRICTION WITH</div>
+                        <div class="compat-name">${roughMatch.name}</div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-section-title">FUN FACT</div>
+                    <p>${m.funFact}</p>
+                </div>
+
+                <div>
+                    <button class="restart-btn" onclick="restart()">RETAKE QUIZ</button>
+                    <button class="view-all-btn" onclick="showPage('types-page')">VIEW ALL TYPES</button>
+                </div>
+            `;
+
+            document.getElementById('results').classList.add('active');
+        }
+
+        function goToMaterial(key) {
+            showPage('types-page');
+            setTimeout(() => showMaterialDetail(key), 100);
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            Object.keys(materials).forEach(m => scores[m] = 0);
+            document.getElementById('header').style.display = 'block';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('results').classList.remove('active');
+            renderQuestion();
+        }
+
+        createParticles();
+        renderQuestion();
+        renderQuadrant();
+    </script>
+</body>
+</html>
